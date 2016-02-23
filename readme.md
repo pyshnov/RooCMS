@@ -1,14 +1,20 @@
-[RooCMS](http://www.roocms.com)
+[![RooCMS](http://version.roocms.com/logo.png)](http://www.roocms.com)
 ===============================
-- Автор:	alex Roosso
-- Сайт:		<http://www.roocms.com>
-- Контакт:	info@roocms.com
-- Лицензия:	GNU GPL v3 (текст лицензии в файле license_original)
+
+| RooCMS   | Open Source Free CMS                            |
+|:--------:|:------------------------------------------------|
+| Author   | alex Roosso                                     |
+| Web      | http://www.roocms.com                           |
+| Contact  | info@roocms.com                                 |
+| Download | http://www.roocms.com/index.php?page=download   |
+| Source   | https://github.com/RooCMS/RooCMS                |
+| License  | GNU GPL v3                                      |
+
 
 Cистемные требования
 --------------------
  - Сервер:	`*nix Apache`
- - PHP:		`5.3.*` `5.4.*` `5.5.*`
+ - PHP:		`5.3.*` `5.4.*` `5.5.*` `5.6.*`
  - MySQL:	`5.*`
  - PHP Extension: 
 	`Core`
@@ -38,7 +44,7 @@ Wiki
 Помошь и подсказки по работе с RooCMS, находятся в панели управления. 
 После установки, зайдите в Панель Управления - "Помощь".
 
-Послесловие
+P.S.
 -----------
 Ваши идеи, замечания, и любая помощь - помогут развиваться RooCMS в интересах большинства.
 

@@ -5,7 +5,7 @@
 * @author	alex Roosso
 * @copyright	2010-2015 (c) RooCMS
 * @link		http://www.roocms.com
-* @version	2.2.4
+* @version	2.2.5
 * @since	$date$
 * @license	http://www.gnu.org/licenses/gpl-3.0.html
 */
@@ -89,10 +89,10 @@ class Debug {
 	/**
 	* Запускаем класс
 	*/
-	public function __construct() {
+	public function Debug() {
 
 		# устанавливаем перехватчик ошибок
-		@set_error_handler(array($this,'debug_critical_error'));
+		set_error_handler(array($this,'debug_critical_error'));
 
 
                 if(!defined('DEBUGMODE'))	define('DEBUGMODE', true);
@@ -124,9 +124,7 @@ class Debug {
 
     	        # timer
                 $mtime = STARTTIME;
-                $mtime = explode(' ', $mtime);
-                $mtime = $mtime[1] + $mtime[0];
-                $this->starttime = $mtime;
+                $this->starttime = STARTTIME;
 
                 # memory
                 $this->memory_usage = MEMORYUSAGE;
@@ -139,10 +137,7 @@ class Debug {
         public function end_productivity() {
 
     	        # timer
-                $mtime = microtime();
-                $mtime = explode(' ', $mtime);
-                $mtime = $mtime[1] + $mtime[0];
-                $endtime = $mtime;
+                $endtime = microtime(true);
                 $totaltime = round(($endtime - $this->starttime), 4);
 
 	        $this->productivity_time = $totaltime;
@@ -258,7 +253,7 @@ class Debug {
 	        ОШИБКА: <b>#{$errno} - {$ertitle}</b>
 	        <br />Строка: <b>{$line}</b> в файле <b>{$file}</b>
 	        <br /><b>{$msg}</b>
-		</div>\n";
+	        </div>\n";
 
 		# Убиваем стандартный обработчик, что бы он ничего не выдал шпиёну (:
 		return true;
@@ -286,9 +281,7 @@ class Debug {
 			ini_set("ignore_repeated_errors",	1);
 			ini_set("ignore_repeated_source",	1);
 		}
-		else {
-			error_reporting(0);
-		}
+		else error_reporting(0);
 	}
 
 
@@ -299,7 +292,7 @@ class Debug {
         * @param mixed $expand  - Флаг развернутого вида
         * @return mixed - Функция выводит на экран дамп переменной $var
         */
-	public function debug($var, $expand=false) {
+	public function godebug($var, $expand=false) {
                 static $use = 1;
 
                 # регестрируем шотдаун
@@ -323,8 +316,9 @@ class Debug {
 				$var = (array) $var;
 			}
 
-			if($expand) 	var_dump($var);
-			else		print_r($var);
+			//if($expand) 	var_dump($var);
+			//else
+			print_r($var);
 
 			$output = ob_get_contents();
 
@@ -362,7 +356,7 @@ class Debug {
 
                 echo "</div></div></div>";
 
-		echo "	<div class='container'><div class='row'><div class='col-xs-12'><div class='panel-group' id='debugaccordion'>";
+		echo "<div class='container'><div class='row'><div class='col-xs-12'><div class='panel-group' id='debugaccordion'>";
 
 		if($debug->show_debug) {
 			echo "	<div class='panel panel-primary'>

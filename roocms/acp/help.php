@@ -3,9 +3,9 @@
 * @package      RooCMS
 * @subpackage	Admin Control Panel
 * @author       alex Roosso
-* @copyright    2010-2014 (c) RooCMS
+* @copyright    2010-2016 (c) RooCMS
 * @link         http://www.roocms.com
-* @version      1.1.1
+* @version      1.1.2
 * @since        $date$
 * @license      http://www.gnu.org/licenses/gpl-3.0.html
 */
@@ -73,7 +73,7 @@ class ACP_HELP {
 	* Инициализация раздела помощи
 	*
 	*/
-	public function __construct() {
+	public function ACP_HELP() {
 
     		global $roocms, $db, $GET, $POST, $tpl, $smarty;
 

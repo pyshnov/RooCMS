@@ -5,7 +5,7 @@
 * @author       alex Roosso
 * @copyright    2010-2016 (c) RooCMS
 * @link         http://www.roocms.com
-* @version      1.2
+* @version      1.2.2
 * @since        $date$
 * @license      http://www.gnu.org/licenses/gpl-3.0.html
 */
@@ -86,7 +86,7 @@ class Parsers {
 	* Lets begin
 	*
 	*/
-	public function __construct() {
+	public function Parsers() {
 
 		global $roocms;
 
@@ -151,20 +151,13 @@ class Parsers {
 		if(isset($_POST['empty']) && ($_POST['empty'] == "1" || $_POST['empty'] == "true")) $empty = true;
 		unset($_POST['empty']);
 
-		$this->post = $this->check_array($_POST, $empty);
+		$post = $this->check_array($_POST, $empty);
 
-		foreach ($this->post as $key=>$value) {
+		foreach ($post as $key=>$value) {
 
-
-			if(is_string($value)) {
-				$this->Post->{$key} = (string) $value;
-			}
-			else if(is_array($value)) {
-				$this->Post->{$key} = (array) $value;
-			}
-			else {
-				$this->Post->{$key} = $value;
-			}
+			if(is_string($value))		$this->Post->{$key} = (string) $value;
+			else if(is_array($value))	$this->Post->{$key} = (array) $value;
+			else				$this->Post->{$key} = $value;
 		}
 
 		unset($_POST);
@@ -184,15 +177,9 @@ class Parsers {
 			# чистим ключ объекта от фигни
 			$key = "_".$key;
 
-			if(is_string($value)) {
-				$this->Get->{$key} = (string) $value;
-			}
-			else if(is_array($value)) {
-				$this->Get->{$key} = (array) $value;
-			}
-			else {
-				$this->Get->{$key} = $value;
-			}
+			if(is_string($value)) 		$this->Get->{$key} = (string) $value;
+			else if(is_array($value))	$this->Get->{$key} = (array) $value;
+			else 				$this->Get->{$key} = $value;
 		}
 	}
 
@@ -311,12 +298,9 @@ class Parsers {
 	*/
 	protected function parse_url() {
 
-		global $db;
-
 		# Страницы
-		if(isset($this->Get->_pg)) {
+		if(isset($this->Get->_pg))
 			$db->page = floor($this->Get->_pg);
-		}
 	}
 
 
@@ -419,8 +403,7 @@ class Parsers {
 
 		$pattern = '/^[\.\-_A-Za-z0-9]+?@[\.\-A-Za-z0-9]+?\.[A-Za-z0-9]{2,6}$/';
 
-		$email = trim($email);
-		if(preg_match($pattern, $email)) return true;
+		if(preg_match($pattern, trim($email))) return true;
 		else return false;
 	}
 
@@ -441,8 +424,7 @@ class Parsers {
 
 		$pattern = "/^[\+]?[0-9]?(\s)?(\-)?(\s)?(\()?[0-9]{3,5}(\))?(\s)?(\-)?(\s)?[0-9]{1,3}(\s)?(\-)?(\s)?[0-9]{2}(\s)?(\-)?(\s)?[0-9]{2}\Z/";
 
-		$phone = trim($phone);
-		if(preg_match($pattern, $phone)) return true;
+		if(preg_match($pattern, trim($phone))) return true;
 		else return false;
 	}
 
@@ -524,10 +506,7 @@ class Parsers {
 	 * @return array|bool
 	 */
 	public function cvrt_color_h2d($hexcolor) {
-		if(mb_strlen($hexcolor) != 7 || mb_strpos($hexcolor, "#") === false) {
-			return false;
-			exit;
-		}
+		if(mb_strlen($hexcolor) != 7 || mb_strpos($hexcolor, "#") === false) return false;
 
 		return array(	"r" => hexdec(mb_substr($hexcolor, 1, 2)),
 				"g" => hexdec(mb_substr($hexcolor, 3, 2)),
@@ -658,9 +637,7 @@ class Parsers {
 					return $is["{$browser}"];
 				}
 			}
-			else {
-				return $is["{$browser}"];
-			}
+			else return $is["{$browser}"];
 		}
 
 		# if we got this far, we are not the specified browser, or the version number is too low

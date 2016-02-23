@@ -5,7 +5,7 @@
 * @author	alex Roosso
 * @copyright	2010-2016 (c) RooCMS
 * @link		http://www.roocms.com
-* @version	1.11
+* @version	1.11.3
 * @since	$date$
 * @license	http://www.gnu.org/licenses/gpl-3.0.html
 */
@@ -73,7 +73,7 @@ class GD {
 	/**
 	* Let's go
 	*/
-	public function __construct() {
+	public function GD() {
 
 		global $config, $site, $parse;
 
@@ -81,46 +81,41 @@ class GD {
 		$this->info = gd_info();
 
 		# Устанавливаем размеры миниатюр из конфигурации
-		if(isset($config->gd_thumb_image_width) && round($config->gd_thumb_image_width) >= 16)		$this->tsize['w'] = round($config->gd_thumb_image_width);
-		if(isset($config->gd_thumb_image_height) && round($config->gd_thumb_image_height) >= 16)	$this->tsize['h'] = round($config->gd_thumb_image_height);
+		if(isset($config->gd_thumb_image_width) && $config->gd_thumb_image_width >= 16)		$this->tsize['w'] = $config->gd_thumb_image_width;
+		if(isset($config->gd_thumb_image_height) && $config->gd_thumb_image_height >= 16)	$this->tsize['h'] = $config->gd_thumb_image_height;
 
 
 		# Устанавливаем максимальные размеры изображений
-		if(isset($config->gd_image_maxwidth) && round($config->gd_image_maxwidth) >= 32 && round($config->gd_image_maxwidth) > $this->tsize['w'])	$this->msize['w'] = round($config->gd_image_maxwidth);
-		if(isset($config->gd_image_maxheight) && round($config->gd_image_maxheight) >= 32 && round($config->gd_image_maxheight) > $this->tsize['h'])	$this->msize['h'] = round($config->gd_image_maxheight);
+		if(isset($config->gd_image_maxwidth) && $config->gd_image_maxwidth >= 32 && $config->gd_image_maxwidth > $this->tsize['w'])	$this->msize['w'] = $config->gd_image_maxwidth;
+		if(isset($config->gd_image_maxheight) && $config->gd_image_maxheight >= 32 && $config->gd_image_maxheight > $this->tsize['h'])	$this->msize['h'] = $config->gd_image_maxheight;
 
 
 		# Тип генерации фона из конфигурации
-		if(isset($config->gd_thumb_type_gen) && $config->gd_thumb_type_gen == "size") {
+		if(isset($config->gd_thumb_type_gen) && $config->gd_thumb_type_gen == "size")
 			$this->thumbtg = "size";
-		}
 
 
 		# Фоновый цвет  из конфигурации
-		if(isset($config->gd_thumb_bgcolor) && mb_strlen($config->gd_thumb_bgcolor) == 7) {
+		if(isset($config->gd_thumb_bgcolor) && mb_strlen($config->gd_thumb_bgcolor) == 7)
 			$this->thumbbgcol = $parse->cvrt_color_h2d($config->gd_thumb_bgcolor);
-		}
 
 
 		# Качество миниатюр  из конфигурации
-		if(isset($config->gd_thumb_jpg_quality) && round($config->gd_thumb_jpg_quality) >= 10 && round($config->gd_thumb_jpg_quality) <= 100) {
-			$this->th_quality = round($config->gd_thumb_jpg_quality);
-		}
+		if(isset($config->gd_thumb_jpg_quality) && $config->gd_thumb_jpg_quality >= 10 && $config->gd_thumb_jpg_quality <= 100)
+			$this->th_quality = $config->gd_thumb_jpg_quality;
 
 
 		# Если используем watermark
-		if(isset($config->gd_use_watermark) && $config->gd_use_watermark != "no") {
+		if(isset($config->gd_use_watermark) && $config->gd_use_watermark == "text") {
 
 			# watermark text string one
-			if(trim($config->gd_watermark_string_one) != "") {
+			if(trim($config->gd_watermark_string_one) != "")
 				$this->copyright = $parse->text->html($config->gd_watermark_string_one);
-			}
 			else $this->copyright = $parse->text->html($site['title']);
 
 			# watermark text string two
-			if(trim($config->gd_watermark_string_two) != "") {
+			if(trim($config->gd_watermark_string_two) != "")
 				$this->domain = $parse->text->html($config->gd_watermark_string_two);
-			}
 			else $this->domain = $_SERVER['SERVER_NAME'];
 		}
 	}
@@ -160,14 +155,12 @@ class GD {
 		if($config->gd_use_watermark != "no" && (isset($options['watermark']) && $options['watermark'])) {
 
 			# Текстовый watermark
-			if($config->gd_use_watermark == "text" ) {
+			if($config->gd_use_watermark == "text" )
 				$this->watermark_text($filename, $extension, $path);
-			}
 
 			# Графический watermark
-			if($config->gd_use_watermark == "image" ) {
+			if($config->gd_use_watermark == "image" )
 				$this->watermark_image($filename, $extension, $path);
-			}
 		}
 	}
 
@@ -238,12 +231,8 @@ class GD {
 		# vars
 		$file 	= $filename.".".$ext;
 
-
 		# определяем размер картинки
 		$size = getimagesize($path."/".$file);
-		$w = $size[0];
-		$h = $size[1];
-
 
 		# вносим в память пустую превью и оригинальный файл, для дальнейшего издевательства над ними.
 		$thumb		= $this->imgcreatetruecolor($this->tsize['w'], $this->tsize['h'], $ext);
@@ -252,9 +241,8 @@ class GD {
 		$bgcolor	= imagecolorallocatealpha($thumb, $this->thumbbgcol['r'], $this->thumbbgcol['g'], $this->thumbbgcol['b'], $alpha);
 
 		# alpha
-		if($ext == "gif" || $ext == "png") {
+		if($ext == "gif" || $ext == "png")
 			imagecolortransparent($thumb, $bgcolor);
-		}
 
 		imagefilledrectangle($thumb, 0, 0, $this->tsize['w']-1, $this->tsize['h']-1, $bgcolor);
 
@@ -264,7 +252,7 @@ class GD {
 		unlink($path."/".$file);
 
 		# Проводим расчеты по сжатию превью и уменьшению в размерах
-		$ns = $this->calc_resize($w, $h, $this->tsize['w'], $this->tsize['h'], false);
+		$ns = $this->calc_resize($size[0], $size[1], $this->tsize['w'], $this->tsize['h'], false);
 
 
 		if($ns['new_left'] > 0) {
@@ -284,7 +272,7 @@ class GD {
 		}
 
 
-		imagecopyresampled($thumb, $src, $ns['new_left'], $ns['new_top'], 0, 0, $ns['new_width'], $ns['new_height'], $w, $h);
+		imagecopyresampled($thumb, $src, $ns['new_left'], $ns['new_top'], 0, 0, $ns['new_width'], $ns['new_height'], $size[0], $size[1]);
 
 		# льем превью
 		if($ext == "jpg")	imagejpeg($thumb,$path."/".$file, $this->th_quality);
@@ -311,8 +299,6 @@ class GD {
 
 		# определяем размер картинки
 		$size = getimagesize($path."/".$fileresize);
-		$w = $size[0];
-		$h = $size[1];
 
 		# вносим в память пустую превью и оригинальный файл, для дальнейшего издевательства над ними.
 		$thumb		= $this->imgcreatetruecolor($this->tsize['w'], $this->tsize['h'], $ext);
@@ -321,9 +307,8 @@ class GD {
         	$bgcolor	= imagecolorallocatealpha($thumb, $this->thumbbgcol['r'], $this->thumbbgcol['g'], $this->thumbbgcol['b'], $alpha);
 
 		# alpha
-		if($ext == "gif" || $ext == "png") {
+		if($ext == "gif" || $ext == "png")
 			imagecolortransparent($thumb, $bgcolor);
-		}
 
 		imagefilledrectangle($thumb, 0, 0, $this->tsize['w']-1, $this->tsize['h']-1, $bgcolor);
 
@@ -332,7 +317,7 @@ class GD {
 
 		# Проводим расчеты по сжатию превью и уменьшению в размерах
 		$resize = ($this->thumbtg != "fill") ? true : false ;
-		$ns = $this->calc_resize($w, $h, $this->tsize['w'], $this->tsize['h'], $resize);
+		$ns = $this->calc_resize($size[0], $size[1], $this->tsize['w'], $this->tsize['h'], $resize);
 
 		# Перерасчет для заливки превью
 		if($this->thumbtg == "fill") {
@@ -353,7 +338,7 @@ class GD {
 			}
 		}
 
-		imagecopyresampled($thumb, $src, $ns['new_left'], $ns['new_top'], 0, 0, $ns['new_width'], $ns['new_height'], $w, $h);
+		imagecopyresampled($thumb, $src, $ns['new_left'], $ns['new_top'], 0, 0, $ns['new_width'], $ns['new_height'], $size[0], $size[1]);
 
 		# льем превью
 		if($ext == "jpg")	imagejpeg($thumb,$path."/".$filethumb, $this->th_quality);
@@ -395,8 +380,7 @@ class GD {
 			array( 2, 4, 2 ),
 			array( 1, 2, 1 )
 		);
-		imageconvolution($src, $matrix, 16, 0);
-		*/
+		imageconvolution($src, $matrix, 16, 0);	*/
 
 
 		# наклон
@@ -411,9 +395,6 @@ class GD {
 
 		# выбираем шрифт
 		$fontfile = ""._ROOCMS."/fonts/trebuc.ttf";
-
-		//imagefilledrectangle($src, 0, $h-33, $w, $h-5, $colorline);
-		//imagettfbbox($size, $angle, $fontfile, $this->domain);
 
 		if(trim($this->copyright) != "") {
 			imagettftext($src, $size, $angle, 7+1, $h-18+1, $shadow, $fontfile, $this->copyright);

@@ -5,7 +5,7 @@
 * @author       alex Roosso
 * @copyright    2010-2016 (c) RooCMS
 * @link         http://www.roocms.com
-* @version      1.1.1
+* @version      1.2.1
 * @since        $date$
 * @license      http://www.gnu.org/licenses/gpl-3.0.html
 */
@@ -120,41 +120,6 @@ function sendmail($mail, $theme, $message, $from="robot") {
 
 
 /**
- * Функция вывода массива для печати.
- *
- * @param array $array       - Массив для печати
- * @param boolean $subarray  - флаг проверки на вложенность массивов
- *
- * @return text $buffer      - Возвращает массив в текстовом представлении.
- */
-function print_array(array $array, $subarray=false) {
-
-	$c = count($array) - 1;
-	$t = 0;
-
-	$buffer = "array(";
-
-	foreach($array as $key=>$value) {
-
-		if(is_array($value)) {
-			$buffer .= "'".$key."' => ".print_array($value,true);
-		}
-		else {
-			$buffer .= "'".$key."' => '".$value."'";
-			if($t < $c) $buffer .= ",\n";
-		}
-
-		$t++;
-	}
-
-	$buffer .= ")";
-	if(!$subarray) $buffer .= ";\n";
-	else $buffer .= ",\n";
-
-	return $buffer;
-}
-
-/**
  * мультибайтовая функция преобразования первого символа строки
  */
 function mb_ucfirst($string) {
@@ -206,6 +171,18 @@ function nocache() {
 	Header("Pragma: no-cache");
 }
 
+/**
+ * Функция получает код ответа от удаленного адреса
+ *
+ * @param $url -  удаленный адрес
+ *
+ * @return string - код ответа
+ */
+function get_http_response_code($url) {
+	$headers = get_headers($url);
+	return substr($headers[0], 9, 3);
+}
+
 
 /**
  * Debug функция
@@ -218,6 +195,6 @@ function nocache() {
  */
 function debug($obj, $expand=false) {
 	global $debug;
-	$debug->debug($obj, $expand);
+	$debug->godebug($obj, $expand);
 }
 ?>

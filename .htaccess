@@ -82,44 +82,46 @@ Options All -ExecCGI -Indexes -Includes +FollowSymLinks
 
 
 # HANDLER ___________________
-AddHandler application/x-httpd-php .html
-AddHandler cgi-script .pl .py .jsp .asp .htm .shtml .sh .cgi
-AddType application/x-javascript .js
-AddType application/json .json
-AddType text/css .css
-AddType text/xml .xml
-# Audio
-AddType audio/ogg .oga .ogg
-AddType audio/mp4 .m4a .f4a .f4b
-# Video
-AddType video/ogg .ogv
-AddType video/mp4 .mp4 .m4v .f4v .f4p
-AddType video/webm .webm
-AddType video/x-flv .flv
-# SVG
-AddType image/svg+xml .svg .svgz
-AddEncoding gzip .svgz
-# Webfonts
-AddType application/vnd.ms-fontobject .eot
-AddType application/x-font-ttf .ttf .ttc
-AddType font/opentype .otf
-AddType application/x-font-woff .woff
-# Assorted types
-AddType image/x-icon .ico
-AddType image/webp .webp
-AddType text/cache-manifest .appcache .manifest
-AddType text/x-component .htc
-AddType application/xml rss atom xml .rdf
-AddType application/x-chrome-extension .crx
-AddType application/x-opera-extension .oex
-AddType application/x-xpinstall .xpi
-AddType application/octet-stream .safariextz
-AddType application/x-web-app-manifest+json .webapp
-AddType text/x-vcard .vcf
-AddType application/x-shockwave-flash .swf
-AddType text/vtt .vtt
-# AddType application/octet-stream .doc .mov .avi .pdf .xls .rar .zip .mp3 .wmv .ppt .tar .gz .docx .xlsx
-# ForceType application/x-httpd-php
+<IfModule mod_mime.c>
+	AddHandler application/x-httpd-php .html
+	AddHandler cgi-script .pl .py .jsp .asp .htm .shtml .sh .cgi
+	AddType application/x-javascript .js
+	AddType application/json .json
+	AddType text/css .css
+	AddType text/xml .xml
+	# Audio
+	AddType audio/ogg .oga .ogg
+	AddType audio/mp4 .m4a .f4a .f4b
+	# Video
+	AddType video/ogg .ogv
+	AddType video/mp4 .mp4 .m4v .f4v .f4p
+	AddType video/webm .webm
+	AddType video/x-flv .flv
+	# SVG
+	AddType image/svg+xml .svg .svgz
+	AddEncoding gzip .svgz
+	# Webfonts
+	AddType application/vnd.ms-fontobject .eot
+	AddType application/x-font-ttf .ttf .ttc
+	AddType font/opentype .otf
+	AddType application/x-font-woff .woff
+	# Assorted types
+	AddType image/x-icon .ico
+	AddType image/webp .webp
+	AddType text/cache-manifest .appcache .manifest
+	AddType text/x-component .htc
+	AddType application/xml rss atom xml .rdf
+	AddType application/x-chrome-extension .crx
+	AddType application/x-opera-extension .oex
+	AddType application/x-xpinstall .xpi
+	AddType application/octet-stream .safariextz
+	AddType application/x-web-app-manifest+json .webapp
+	AddType text/x-vcard .vcf
+	AddType application/x-shockwave-flash .swf
+	AddType text/vtt .vtt
+	# AddType application/octet-stream .doc .mov .avi .pdf .xls .rar .zip .mp3 .wmv .ppt .tar .gz .docx .xlsx
+	# ForceType application/x-httpd-php
+</IfModule>
 
 
 # INDEX FILE ________________
@@ -130,11 +132,11 @@ DirectoryIndex index.php
 <IfModule mod_gzip.c>
 	mod_gzip_on         Yes
 	mod_gzip_dechunk    Yes
-	mod_gzip_item_include file		\.(html?|txt|css|js|php|pl)$
-	mod_gzip_item_include mime		^text\.*
-	mod_gzip_item_include mime		^application/x-javascript.*
-	mod_gzip_item_include mime		^application/x-font-woff.*
-	mod_gzip_item_exclude mime		^image\.*
+	mod_gzip_item_include file	\.(html?|txt|css|js|php|pl)$
+	mod_gzip_item_include mime	^text\.*
+	mod_gzip_item_include mime	^application/x-javascript.*
+	mod_gzip_item_include mime	^application/x-font-woff.*
+	mod_gzip_item_exclude mime	^image\.*
 	mod_gzip_item_exclude rspheader	^Content-Encoding:.*gzip.*
 </IfModule>
 <ifModule mod_deflate.c>
@@ -174,11 +176,39 @@ php_value	docref_ext 0
 # php_value	auto_append_file append.php
 #php_value	user_agent “Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)”
 
-<Files php_error.log>
-	Order allow,deny
-	Deny from all
-	Satisfy All
-</Files>
+
+# With Apache 2.4 the "Order, Deny" syntax has been deprecated and moved from
+# module mod_authz_host to a new module called mod_access_compat (which may be
+# disabled) and a new "Require" syntax has been introduced to mod_authz_host.
+<IfModule mod_version.c>
+	<IfVersion < 2.4>
+		<Files "php_error.log">
+			Order Allow,Deny
+			Deny from All
+			Satisfy All
+		</Files>
+	</IfVersion>
+	<IfVersion >= 2.4>
+		<Files "php_error.log">
+			Require all denied
+		</Files>
+	</IfVersion>
+</IfModule>
+<IfModule !mod_version.c>
+	<IfModule !mod_authz_core.c>
+		<Files "php_error.log">
+			Order Allow,Deny
+			Deny from All
+			Satisfy All
+		</Files>
+	</IfModule>
+	<IfModule mod_authz_core.c>
+		<Files "php_error.log">
+			Require all denied
+		</Files>
+	</IfModule>
+</IfModule>
+
 
 <IfModule php5_module>
 	# php_value session.cookie_httponly true
